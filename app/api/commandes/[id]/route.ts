@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import type { Commande } from "@prisma/client";
 import prisma from "@/app/lib/prisma";
 
@@ -95,7 +95,8 @@ export const PATCH = async (request: Request, { params }: { params: { id: string
 //     return NextResponse.json(commande, {status: 200});
 // }
 
-export const DELETE = async (request: Request, { params }: { params: { id: string } }) => {
+export const DELETE = async (request: NextRequest, context: { params: { id: string } }) => {
+    const id = Number(context.params.id);
     try {
       const url = new URL(request.url);
       const page = parseInt(url.searchParams.get("page") || "1", 10);
@@ -106,7 +107,7 @@ export const DELETE = async (request: Request, { params }: { params: { id: strin
       // 🗑️ Suppression de la commande
       await prisma.commande.delete({
         where: {
-          idCommande: Number(params.id),
+          idCommande: id,
         },
       });
   

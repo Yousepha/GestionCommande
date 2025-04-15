@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import type { Produit } from "@prisma/client";
 import prisma from "@/app/lib/prisma";
 
@@ -15,10 +15,12 @@ export const PATCH = async (request: Request, {params}: {params: {id: string}}) 
     return NextResponse.json(produit, {status: 200});
 }
 
-export const DELETE = async (request: Request, {params}: {params: {id: string}}) =>{
+export const DELETE = async (request: NextRequest, context: { params: { id: string } }) =>{
+    const id = Number(context.params.id);
+
     const produit = await prisma.produit.delete({
         where:{
-            idProduit: Number(params.id)
+            idProduit: id,
         }
     });
     return NextResponse.json(produit, {status: 200});
